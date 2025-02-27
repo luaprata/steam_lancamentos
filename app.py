@@ -19,10 +19,16 @@ if st.button("🔄 Atualizar Dados"):
     st.cache_data.clear()  # Limpa o cache do Streamlit
     st.experimental_rerun()  # Recarrega a página
 
-# Título da Aplicação
-st.title("🎮 Próximos Lançamentos na Steam")
+# Garantir que 'release_date' não tenha valores vazios
+df = df.dropna(subset=["release_date"])  # Remove linhas onde 'release_date' é NaT
+df["release_date"] = pd.to_datetime(df["release_date"], errors='coerce')  # Converte para datetime
 
-st.write("Este aplicativo exibe os próximos jogos a serem lançados na Steam com base nos dados coletados via Web Scraping.")
+# Se o dataframe estiver vazio após remover NaT, definir valores padrão
+if df.empty:
+    min_date = max_date = pd.to_datetime("today")  # Define a data atual como fallback
+else:
+    min_date = df["release_date"].min()
+    max_date = df["release_date"].max()
 
 # Sidebar com filtros
 st.sidebar.header("🔍 Filtros")
@@ -35,7 +41,7 @@ if "genres" in df.columns:
     if genero_selecionado:
         df = df[df['genres'].apply(lambda x: any(g in x for g in genero_selecionado))]
 
-# Filtro por Data de Lançamento
+## 🔹 **Filtro por Data de Lançamento**
 data_selecionada = st.sidebar.date_input(
     "Filtrar por data de lançamento:",
     [min_date, max_date] if min_date != max_date else min_date,  # Evita erro com intervalo igual
@@ -43,10 +49,8 @@ data_selecionada = st.sidebar.date_input(
     max_value=max_date
 )
 
-    data_selecionada = st.sidebar.date_input("Filtrar por data de lançamento:", [min_date, max_date], min_value=min_date, max_value=max_date)
-
-    if isinstance(data_selecionada, list) and len(data_selecionada) == 2:
-        df = df[(df["release_date"] >= pd.to_datetime(data_selecionada[0])) & (df["release_date"] <= pd.to_datetime(data_selecionada[1]))]
+if isinstance(data_selecionada, list) and len(data_selecionada) == 2:
+    df = df[(df["release_date"] >= pd.to_datetime(data_selecionada[0])) & (df["release_date"] <= pd.to_datetime(data_selecionada[1]))]
 
 ## 🔹 **Filtro por Preço**
 if "price" in df.columns:
