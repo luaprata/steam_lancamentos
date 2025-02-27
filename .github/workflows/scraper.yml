@@ -1,7 +1,6 @@
 name: Steam Scraper Automation
 
 on:
-
   schedule:
     - cron: "0 12 * * *"  # Executa todo dia às 12h UTC
   workflow_dispatch:  # Permite executar manualmente pelo GitHub Actions
@@ -21,7 +20,6 @@ jobs:
 
       - name: 📦 Instalar dependências
         run: |
-
           pip install -r requirements.txt
           pip install jupyter  # Garante que o Jupyter está instalado
 
@@ -37,12 +35,9 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          git pull origin main --rebase  # 🔄 Evita conflitos antes do push
+          
           git add steam_upcoming_games.csv
           git commit -m "📊 Atualizando dados do Steam Scraper automaticamente" || echo "Nenhuma mudança para commitar"
+
+          git pull origin main --rebase  # 🔄 Agora o pull ocorre depois do commit
           git push origin main
-
-
-
-
-
