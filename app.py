@@ -35,10 +35,13 @@ if "genres" in df.columns:
     if genero_selecionado:
         df = df[df['genres'].apply(lambda x: any(g in x for g in genero_selecionado))]
 
-## 🔹 **Filtro por Data de Lançamento**
-if "release_date" in df.columns:
-    min_date = df["release_date"].min()
-    max_date = df["release_date"].max()
+# Filtro por Data de Lançamento
+data_selecionada = st.sidebar.date_input(
+    "Filtrar por data de lançamento:",
+    [min_date, max_date] if min_date != max_date else min_date,  # Evita erro com intervalo igual
+    min_value=min_date,
+    max_value=max_date
+)
 
     data_selecionada = st.sidebar.date_input("Filtrar por data de lançamento:", [min_date, max_date], min_value=min_date, max_value=max_date)
 
