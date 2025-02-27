@@ -1,3 +1,4 @@
+jupyter
 selenium
 beautifulsoup4
 requests
