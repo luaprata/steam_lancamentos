@@ -33,15 +33,15 @@ jobs:
         
       - name: 💾 Commit e push dos dados atualizados
         env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          git remote set-url origin https://$GITHUB_ACTOR:$GH_PAT@github.com/luaprata/steam_lancamentos.git
-          git pull origin main --rebase  # 🔄 Garante que está atualizado antes do push
+          git pull origin main --rebase  # 🔄 Evita conflitos antes do push
           git add steam_upcoming_games.csv
           git commit -m "📊 Atualizando dados do Steam Scraper automaticamente" || echo "Nenhuma mudança para commitar"
           git push origin main
+
 
 
 
