@@ -4,18 +4,17 @@ import pandas as pd
 # URL do CSV no GitHub (RAW)
 CSV_URL = "https://raw.githubusercontent.com/luaprata/steam_lancamentos/main/steam_upcoming_games.csv"
 
-# Função para carregar os dados
-@st.cache_data
+# 🔄 Carregar os dados e atualizar automaticamente a cada 10 minutos
+@st.cache_data(ttl=600)  # TTL = 10 minutos
 def load_data():
-    df = pd.read_csv(CSV_URL)
-
-    # Converter colunas para tipos apropriados
-    df["release_date"] = pd.to_datetime(df["release_date"], errors='coerce')  # Converter para data
-    df["price"] = df["price"].astype(str)  # Manter preço como string
-    
-    return df
+    return pd.read_csv(CSV_URL)
 
 df = load_data()
+
+# 🔄 Botão para atualizar os dados manualmente
+if st.button("🔄 Atualizar Dados"):
+    st.cache_data.clear()  # Limpa o cache do Streamlit
+    st.experimental_rerun()  # Recarrega a página
 
 # Configuração da Página
 st.set_page_config(page_title="🎮 Steam Lançamentos", layout="wide")
@@ -28,15 +27,15 @@ st.write("Este aplicativo exibe os próximos jogos a serem lançados na Steam co
 # Sidebar com filtros
 st.sidebar.header("🔍 Filtros")
 
-## 🔹 **1️⃣ Filtro por Gênero**
+## 🔹 **Filtro por Gênero**
 if "genres" in df.columns:
-    generos_exploded = df['genres'].str.split(', ').explode().unique()  # Quebra os gêneros
+    generos_exploded = df['genres'].str.split(', ').explode().unique()
     genero_selecionado = st.sidebar.multiselect("Filtrar por gênero:", sorted(generos_exploded))
 
     if genero_selecionado:
         df = df[df['genres'].apply(lambda x: any(g in x for g in genero_selecionado))]
 
-## 🔹 **2️⃣ Filtro por Data de Lançamento**
+## 🔹 **Filtro por Data de Lançamento**
 if "release_date" in df.columns:
     min_date = df["release_date"].min()
     max_date = df["release_date"].max()
@@ -46,7 +45,7 @@ if "release_date" in df.columns:
     if isinstance(data_selecionada, list) and len(data_selecionada) == 2:
         df = df[(df["release_date"] >= pd.to_datetime(data_selecionada[0])) & (df["release_date"] <= pd.to_datetime(data_selecionada[1]))]
 
-## 🔹 **3️⃣ Filtro por Preço**
+## 🔹 **Filtro por Preço**
 if "price" in df.columns:
     unique_prices = df["price"].unique()
     preco_selecionado = st.sidebar.multiselect("Filtrar por preço:", sorted(unique_prices))
