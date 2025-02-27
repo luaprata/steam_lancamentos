@@ -28,7 +28,7 @@ st.write("Este aplicativo exibe os próximos jogos a serem lançados na Steam co
 # Sidebar com filtros
 st.sidebar.header("🔍 Filtros")
 
-## 🔹 **1️⃣ Filtro por Gênero (Quebrando corretamente os gêneros)**
+## 🔹 **1️⃣ Filtro por Gênero**
 if "genres" in df.columns:
     generos_exploded = df['genres'].str.split(', ').explode().unique()  # Quebra os gêneros
     genero_selecionado = st.sidebar.multiselect("Filtrar por gênero:", sorted(generos_exploded))
@@ -57,11 +57,23 @@ if "price" in df.columns:
 # Criar links clicáveis na coluna de URL
 df["game_url"] = df["game_url"].apply(lambda x: f'<a href="{x}" target="_blank">🔗 Acessar</a>')
 
+# Renomear colunas
+df = df.rename(columns={
+    "title": "Nome",
+    "release_date": "Data de Lançamento",
+    "price": "Preço",
+    "genres": "Gêneros",
+    "game_url": "Link"
+})
+
+# Reordenar as colunas para deixar o Link por último
+df = df[["Nome", "Data de Lançamento", "Preço", "Gêneros", "Link"]]
+
 # Exibir a tabela com os dados filtrados
 st.write("### 📋 Lista de Jogos")
 st.write("Clique no link para acessar a página do jogo na Steam.")
 
 st.write(
-    df[["title", "release_date", "price", "game_url", "genres"]].to_html(escape=False, index=False),
+    df.to_html(escape=False, index=False),
     unsafe_allow_html=True
 )
