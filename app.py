@@ -4,7 +4,7 @@ import pandas as pd
 # 🚀 Configuração da Página
 st.set_page_config(page_title="🎮 Steam Lançamentos", layout="wide")
 
-# 🔹 Estilizar a Tabela - Centralizar Títulos
+# 🔹 Estilizar a Tabela - Centralizar Títulos e Ocultar Coluna Duplicada
 st.markdown(
     """
     <style>
@@ -13,6 +13,9 @@ st.markdown(
         }
         tbody td {
             text-align: left !important;
+        }
+        thead th:nth-child(5), tbody td:nth-child(5) {
+            display: none;
         }
     </style>
     """,
