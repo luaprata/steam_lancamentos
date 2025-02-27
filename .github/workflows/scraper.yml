@@ -38,3 +38,5 @@ jobs:
           git add steam_upcoming_games.csv
           git commit -m "📊 Atualizando dados do Steam Scraper automaticamente" || echo "Nenhuma mudança para commitar"
           git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/luaprata/steam_lancamentos.git main
+
+
