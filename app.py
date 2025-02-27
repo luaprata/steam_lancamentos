@@ -53,12 +53,16 @@ if isinstance(data_selecionada, list) and len(data_selecionada) == 2:
     df = df[(df["release_date"] >= pd.to_datetime(data_selecionada[0])) & (df["release_date"] <= pd.to_datetime(data_selecionada[1]))]
 
 ## 🔹 **Filtro por Preço**
-if "price" in df.columns:
-    unique_prices = df["price"].unique()
-    preco_selecionado = st.sidebar.multiselect("Filtrar por preço:", sorted(unique_prices))
+df["price"] = df["price"].astype(str).str.strip()  # Garantir que seja string e limpar espaços
+df = df[df["price"] != ""]  # Remover valores vazios
 
-    if preco_selecionado:
-        df = df[df["price"].isin(preco_selecionado)]
+unique_prices = sorted(df["price"].dropna().unique(), key=lambda x: (x.isdigit(), x))
+
+preco_selecionado = st.sidebar.multiselect("Filtrar por preço:", unique_prices)
+
+if preco_selecionado:
+    df = df[df["price"].isin(preco_selecionado)]
+
 
 # Criar links clicáveis na coluna de URL
 df["game_url"] = df["game_url"].apply(lambda x: f'<a href="{x}" target="_blank">🔗 Acessar</a>')
