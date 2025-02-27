@@ -15,14 +15,18 @@ jobs:
       - name: 🛠️ Configurar Python
         uses: actions/setup-python@v3
         with:
-          python-version: '3.9'  # Pode ajustar para a versão que estiver usando
+          python-version: '3.9'
 
       - name: 📦 Instalar dependências
         run: |
-          pip install -r requirements.txt  # Instala as dependências do seu scraper
+          pip install -r requirements.txt
+          pip install jupyter  # Garante que o Jupyter está instalado
+
+      - name: 🔄 Converter Notebook para .py
+        run: jupyter nbconvert --to script steam_scraper.ipynb
 
       - name: 🚀 Executar o scraper
-        run: python steam_scraper.py  # Agora executa diretamente o arquivo .py
+        run: python steam_scraper.py
 
       - name: 💾 Commit e push dos dados atualizados
         run: |
