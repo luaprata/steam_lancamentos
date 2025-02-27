@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 
+# 🚀 Deve ser a PRIMEIRA linha do código!
+st.set_page_config(page_title="🎮 Steam Lançamentos", layout="wide")
+
 # URL do CSV no GitHub (RAW)
 CSV_URL = "https://raw.githubusercontent.com/luaprata/steam_lancamentos/main/steam_upcoming_games.csv"
 
@@ -15,9 +18,6 @@ df = load_data()
 if st.button("🔄 Atualizar Dados"):
     st.cache_data.clear()  # Limpa o cache do Streamlit
     st.experimental_rerun()  # Recarrega a página
-
-# Configuração da Página
-st.set_page_config(page_title="🎮 Steam Lançamentos", layout="wide")
 
 # Título da Aplicação
 st.title("🎮 Próximos Lançamentos na Steam")
