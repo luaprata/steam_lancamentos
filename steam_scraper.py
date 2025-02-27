@@ -145,12 +145,6 @@ df.to_csv("steam_upcoming_games.csv", index=False, encoding="utf-8")
 print(f"✅ Coletados {len(games)} jogos futuros e salvos em steam_upcoming_games.csv")
 
 
-# In[4]:
-
-
-jupyter nbconvert --to script steam_scraper.ipynb
-
-
 # In[ ]:
 
 
