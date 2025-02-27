@@ -81,20 +81,6 @@ Este projeto realiza web scraping na Steam para coletar informações sobre os j
 
 ---
 
-## 🤝 Contribuição
-Sinta-se à vontade para contribuir! Para isso:
 
-1. Faça um **fork** do repositório.
-2. Crie uma **branch** para sua funcionalidade.
-3. Faça um **commit** com suas alterações.
-4. Abra um **pull request**.
-
----
-
-## 📜 Licença
-Este projeto está sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
----
-
-Desenvolvido por [Seu Nome](https://github.com/seu-usuario) 🚀
+Desenvolvido por [Luã Prata](https://github.com/luaprata) 🚀
 
