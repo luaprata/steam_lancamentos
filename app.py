@@ -17,7 +17,7 @@ df = load_data()
 # 🔄 Botão para atualizar os dados manualmente
 if st.button("🔄 Atualizar Dados"):
     st.cache_data.clear()  # Limpa o cache do Streamlit
-    st.experimental_rerun()  # Recarrega a página
+    st.rerun()  # Atualiza a página corretamente
 
 # Garantir que 'release_date' não tenha valores vazios
 df = df.dropna(subset=["release_date"])  # Remove linhas onde 'release_date' é NaT
