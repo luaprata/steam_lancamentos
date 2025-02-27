@@ -10,8 +10,8 @@ def load_data():
     df = pd.read_csv(CSV_URL)
 
     # Converter colunas para tipos apropriados
-    df["release_date"] = pd.to_datetime(df["release_date"], errors='coerce')  # Corrige datas inválidas
-    df["price"] = df["price"].astype(str)  # Mantém o preço como string (caso tenha variações)
+    df["release_date"] = pd.to_datetime(df["release_date"], errors='coerce')  # Converter para data
+    df["price"] = df["price"].astype(str)  # Manter preço como string
     
     return df
 
@@ -28,27 +28,40 @@ st.write("Este aplicativo exibe os próximos jogos a serem lançados na Steam co
 # Sidebar com filtros
 st.sidebar.header("🔍 Filtros")
 
-# Filtro por gênero
+## 🔹 **1️⃣ Filtro por Gênero (Quebrando corretamente os gêneros)**
 if "genres" in df.columns:
-    generos = df['genres'].str.split(', ').explode().unique()
-    genero_selecionado = st.sidebar.multiselect("Filtrar por gênero:", generos)
+    generos_exploded = df['genres'].str.split(', ').explode().unique()  # Quebra os gêneros
+    genero_selecionado = st.sidebar.multiselect("Filtrar por gênero:", sorted(generos_exploded))
 
     if genero_selecionado:
         df = df[df['genres'].apply(lambda x: any(g in x for g in genero_selecionado))]
 
-# Filtro por preço (opcional, se os preços forem numéricos)
+## 🔹 **2️⃣ Filtro por Data de Lançamento**
+if "release_date" in df.columns:
+    min_date = df["release_date"].min()
+    max_date = df["release_date"].max()
+
+    data_selecionada = st.sidebar.date_input("Filtrar por data de lançamento:", [min_date, max_date], min_value=min_date, max_value=max_date)
+
+    if isinstance(data_selecionada, list) and len(data_selecionada) == 2:
+        df = df[(df["release_date"] >= pd.to_datetime(data_selecionada[0])) & (df["release_date"] <= pd.to_datetime(data_selecionada[1]))]
+
+## 🔹 **3️⃣ Filtro por Preço**
 if "price" in df.columns:
     unique_prices = df["price"].unique()
-    preco_selecionado = st.sidebar.multiselect("Filtrar por preço:", unique_prices)
+    preco_selecionado = st.sidebar.multiselect("Filtrar por preço:", sorted(unique_prices))
 
     if preco_selecionado:
         df = df[df["price"].isin(preco_selecionado)]
 
-# Exibir os dados filtrados
-st.dataframe(df)
+# Criar links clicáveis na coluna de URL
+df["game_url"] = df["game_url"].apply(lambda x: f'<a href="{x}" target="_blank">🔗 Acessar</a>')
 
-# Criar link clicável para cada jogo
-st.write("### 🔗 Acesse os jogos na Steam")
-df["game_url"] = df["game_url"].apply(lambda x: f"[Link]( {x} )")
+# Exibir a tabela com os dados filtrados
+st.write("### 📋 Lista de Jogos")
+st.write("Clique no link para acessar a página do jogo na Steam.")
 
-st.dataframe(df[["title", "release_date", "price", "game_url", "genres"]], unsafe_allow_html=True)
+st.write(
+    df[["title", "release_date", "price", "game_url", "genres"]].to_html(escape=False, index=False),
+    unsafe_allow_html=True
+)
