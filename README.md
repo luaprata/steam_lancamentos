@@ -1,4 +1,4 @@
-# 🚀 Steam Upcoming Games Scraper
+# 🚀 Lançamentos Steam
 
 Este projeto realiza web scraping na Steam para coletar informações sobre os jogos que serão lançados em breve. Ele extrai dados como título, data de lançamento, preço e gêneros dos jogos.
 
@@ -19,47 +19,6 @@ Este projeto realiza web scraping na Steam para coletar informações sobre os j
 - **BeautifulSoup** (para extração de informações da página)
 - **Pandas** (para manipulação e exportação de dados)
 - **Tqdm** (para barra de progresso)
-
----
-
-## ⚙️ Instalação
-
-1. **Clone o repositório:**
-   ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-   cd seu-repositorio
-   ```
-
-2. **Crie um ambiente virtual (opcional, mas recomendado):**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # Linux/Mac
-   venv\Scripts\activate  # Windows
-   ```
-
-3. **Instale as dependências:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Baixe e configure o ChromeDriver:**
-   - Faça o download do [ChromeDriver](https://sites.google.com/chromium.org/driver/)
-   - Certifique-se de que a versão corresponde ao seu Google Chrome.
-   - Atualize o caminho do ChromeDriver no código se necessário.
-
----
-
-## ▶️ Como Executar o Script
-
-1. **Execute o script de scraping:**
-   ```bash
-   python steam_scraper.py
-   ```
-
-2. **Os dados coletados serão salvos em um arquivo CSV:**
-   ```bash
-   steam_upcoming_games.csv
-   ```
 
 ---
 
