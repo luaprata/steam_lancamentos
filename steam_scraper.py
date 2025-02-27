@@ -15,18 +15,19 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
 from tqdm import tqdm
 
-# 🔹 Caminho correto do ChromeDriver
-chrome_driver_path = r"C:\Users\User\.wdm\drivers\chromedriver\win64\133.0.6943.141\chromedriver-win32\chromedriver.exe"
 
-# 🔹 Configuração do Selenium
+# Configuração do Selenium para rodar no GitHub Actions
 options = Options()
-options.add_argument("--headless")  # Roda sem abrir o navegador
-options.add_argument("--disable-gpu")
-options.add_argument("--window-size=1920,1080")
+options.add_argument("--headless")  
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
+
+# ✅ Instala e configura automaticamente o ChromeDriver
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service, options=options)
 
 
 # 🔹 Função para coletar os jogos sem acessar individualmente
