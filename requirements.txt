@@ -1,6 +1,7 @@
-jupyter
+pandas
 selenium
 beautifulsoup4
 requests
 tqdm
-pandas
+webdriver-manager
+jupyter
