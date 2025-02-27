@@ -28,11 +28,11 @@ Este projeto realiza web scraping na Steam para coletar informações sobre os j
 ## 📂 Estrutura do Projeto
 ```
 📦 steam_scraper
-├── 📜 steam_scraper.py      # Script principal de scraping
-├── 📜 requirements.txt      # Lista de dependências
-├── 📜 README.md             # Documentação do projeto
+├── 📜 steam_scraper.py          # Script principal de scraping
+├── 📜 requirements.txt          # Lista de dependências
+├── 📜 README.md                 # Documentação do projeto
 ├── 📜 steam_upcoming_games.csv  # Dados extraídos
-├── 📜 app.py  # Script streamlit
+├── 📜 app.py                    # Script streamlit
 
 ```
 
