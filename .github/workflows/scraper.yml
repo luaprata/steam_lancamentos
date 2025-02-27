@@ -22,12 +22,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt  # Certifique-se de ter um requirements.txt
-          
-      - name: 📥 Instalar Jupyter
-        run: pip install jupyter
 
-      - name: 🚀 Executar o notebook
-        run: jupyter nbconvert --to notebook --execute steam_scraper.ipynb --output output.ipynb
+      - name: 🚀 Executar o scraper
+        run: python steam_scraper.py  # Ajuste conforme o nome do seu script
 
       - name: 📂 Commit e push dos dados
         run: |
