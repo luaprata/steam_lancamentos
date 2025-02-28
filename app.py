@@ -41,7 +41,7 @@ df = df.loc[:, ~df.columns.duplicated()].copy()
 df["release_date"] = df["release_date"].replace({None: "Indefinido", "nan": "Indefinido", "NaT": "Indefinido"}).astype(str)
 df["price"] = df["price"].replace({None: "Indefinido", "nan": "Indefinido", "NaT": "Indefinido"}).astype(str)
 
-# 🔍 Sidebar com filtros (Removemos o título "🔍 Filtros")
+# 🔍 Sidebar com filtros
 ## 🔹 **Filtro por Nome**
 nome_busca = st.sidebar.text_input("🔎 Buscar jogo por nome:")
 
@@ -107,8 +107,8 @@ df["Ordem"] = df["Destaque"].apply(lambda x: 1 if "🔥" in x else 2)
 df = df.sort_values(by=["Ordem", "Data_Ordenacao"], ascending=[True, True])
 df = df.drop(columns=["Ordem", "Data_Ordenacao"])
 
-# 🔗 Criar hyperlinks clicáveis diretamente para `st.dataframe()`
-df["Link"] = df["game_url"].apply(lambda x: f"[🔗 Acessar]({x})" if pd.notna(x) else "Indisponível")
+# 🔗 **Criar Hyperlinks clicáveis**
+df["Link"] = df["game_url"].apply(lambda x: f'<a href="{x}" target="_blank">🔗 Acessar</a>' if pd.notna(x) else "Indisponível")
 
 # 📌 Renomear colunas para exibição final
 df = df.rename(columns={
@@ -134,5 +134,5 @@ st.markdown("## 🎮 Steam Lançamentos")
 # ✅ Exibir contagem de jogos
 st.write(f"🎮 Exibindo **{len(df)}** jogos filtrados")
 
-# ✅ Exibir tabela corrigida de forma segura
-st.dataframe(df, use_container_width=True)
+# ✅ Exibir tabela corrigida com Hyperlinks renderizados corretamente
+st.markdown(df.to_html(escape=False, index=False), unsafe_allow_html=True)
