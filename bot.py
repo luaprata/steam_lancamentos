@@ -88,7 +88,7 @@ async def send_game_updates():
 
     # 🔹 Se houver mais jogos, enviar um link para consultar todos
     if len(games) > max_games:
-        await channel.send(f"📌 Existem **{len(games) - max_games}** jogos a mais. Veja a lista completa no [Steam Lançamentos](https://seu-link.com).")
+        await channel.send(f"📌 Existem **{len(games) - max_games}** jogos a mais. Veja a lista completa no [Steam Lançamentos](https://luaprata-steamlancamentos.streamlit.app/).")
 
 # 🔹 Iniciar o bot
 client.run(TOKEN)
