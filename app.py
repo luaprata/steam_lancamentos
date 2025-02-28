@@ -18,7 +18,7 @@ if st.button("🔄 Atualizar Dados"):
     st.cache_data.clear()
     st.rerun()
 
-# ✅ Remover colunas duplicadas (garantindo que não existam conflitos)
+# ✅ Remover colunas duplicadas
 df = df.loc[:, ~df.columns.duplicated()].copy()
 
 # ✅ Garantir que todas as colunas estão no formato correto
@@ -74,22 +74,6 @@ if st.sidebar.checkbox("🆓 Mostrar apenas jogos gratuitos"):
 if st.sidebar.checkbox("🔗 Mostrar apenas jogos com link"):
     df = df[df["game_url"].notna()]
 
-## 🔹 **Ordenar por**
-opcoes_ordenacao = ["Nome", "Data de Lançamento", "Preço"]
-ordem_selecionada = st.sidebar.selectbox("📊 Ordenar por:", opcoes_ordenacao)
-
-# Aplicando ordenação
-if ordem_selecionada == "Nome":
-    df = df.sort_values(by="title", ascending=True)
-elif ordem_selecionada == "Data de Lançamento":
-    df = df.sort_values(by=pd.to_datetime(df["release_date"], errors='coerce'), ascending=True)
-elif ordem_selecionada == "Preço":
-    df = df.sort_values(by="price", ascending=True)
-
-## 🔹 **Botão "Limpar Filtros"**
-if st.sidebar.button("🗑️ Limpar Filtros"):
-    st.experimental_rerun()
-
 # 🔥 Destaque para Jogos Próximos ao Lançamento
 hoje = datetime.today()
 prox_7_dias = hoje + timedelta(days=7)
@@ -98,7 +82,12 @@ df["Destaque"] = pd.to_datetime(df["release_date"], errors='coerce').apply(
     lambda x: "🔥 " if pd.notna(x) and x >= hoje and x <= prox_7_dias else "")
 
 df["Nome"] = df["Destaque"] + df["title"]
-df = df.drop(columns=["Destaque"])
+
+# 📌 Ordenação Padrão (🔥 primeiro e depois Data de Lançamento)
+df["Data_Ordenacao"] = pd.to_datetime(df["release_date"], errors='coerce')
+df["Ordem"] = df["Destaque"].apply(lambda x: 1 if "🔥" in x else 2)
+df = df.sort_values(by=["Ordem", "Data_Ordenacao"], ascending=[True, True])
+df = df.drop(columns=["Ordem", "Data_Ordenacao"])
 
 # 🔗 Exibir links como texto puro (removendo HTML para evitar erro)
 df["Link"] = df["game_url"]
@@ -116,9 +105,8 @@ df = df.drop(columns=["Gêneros_Filtro"], errors="ignore")
 # 📌 Reordenar colunas
 df = df[["Nome", "Data de Lançamento", "Preço", "Gêneros", "Link"]]
 
-# ✅ Verificar tipos antes de exibir
-st.write("🔍 Verificando tipos de dados antes de exibir:")
-st.write(df.dtypes)
+# ✅ Remover exibição da verificação dos tipos de dados
+# (ANTES ESTAVA EXIBINDO OS TIPOS, AGORA FOI REMOVIDO)
 
 # ✅ Exibir contagem de jogos
 st.write(f"🎮 Exibindo **{len(df)}** jogos filtrados")
