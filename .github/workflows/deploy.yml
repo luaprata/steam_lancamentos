@@ -3,11 +3,10 @@ name: Deploy Railway (Somente bot.py e Procfile)
 on:
   push:
     branches:
-      - main             # Define que isso acontece apenas na branch principal
-    paths-ignore:
-      - '**'             # Ignora todas as alterações por padrão
-      - '!bot.py'        # 🚀 Executa se bot.py for alterado
-      - '!Procfile'      # 🚀 Executa se Procfile for alterado
+      - main  # Executa apenas na branch principal
+    paths:
+      - 'bot.py'     # 🚀 Executa o workflow se bot.py for alterado
+      - 'Procfile'   # 🚀 Executa o workflow se Procfile for alterado
 
 jobs:
   deploy:
