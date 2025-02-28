@@ -108,7 +108,7 @@ df = df.sort_values(by=["Ordem", "Data_Ordenacao"], ascending=[True, True])
 df = df.drop(columns=["Ordem", "Data_Ordenacao"])
 
 # 🔗 Criar hyperlinks clicáveis diretamente para `st.dataframe()`
-df["Link"] = df["game_url"].apply(lambda x: f"[🔗 Acessar]({x})" if pd.notna(x) else "Indisponível")
+df["Link"] = df["game_url"].apply(lambda x: f"{x}" if pd.notna(x) else "Indisponível")
 
 # 📌 Renomear colunas para exibição final
 df = df.rename(columns={
