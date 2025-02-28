@@ -24,19 +24,13 @@ df = df.loc[:, ~df.columns.duplicated()]
 # ✅ Garantir que todas as colunas estão no formato correto
 df = df.astype(str)
 
-# ✅ Remover valores inválidos
-df = df.dropna(how="any")  
-df = df.replace({None: "", "nan": "", "NaT": ""})
+# 🔄 Substituir valores ausentes por "Indefinido"
+df["release_date"] = df["release_date"].replace({None: "Indefinido", "nan": "Indefinido", "NaT": "Indefinido"})
+df["price"] = df["price"].replace({None: "Indefinido", "nan": "Indefinido", "NaT": "Indefinido"})
 
-# ✅ Converter 'release_date' para datetime
-df["release_date"] = pd.to_datetime(df["release_date"], errors='coerce')
-
-# Se o dataframe estiver vazio após remover NaT, definir valores padrão
-if df.empty:
-    min_date = max_date = pd.to_datetime("today")
-else:
-    min_date = df["release_date"].min()
-    max_date = df["release_date"].max()
+# Garantir que as colunas estão no formato correto
+df["release_date"] = df["release_date"].astype(str)
+df["price"] = df["price"].astype(str)
 
 # 🔍 Sidebar com filtros
 st.sidebar.header("🔍 Filtros")
@@ -57,6 +51,9 @@ if "genres" in df.columns:
         df = df[df["Gêneros"].apply(lambda x: all(g in x for g in genero_selecionado))]
 
 ## 🔹 **Filtro por Data de Lançamento**
+min_date = pd.to_datetime(df["release_date"], errors='coerce').min()
+max_date = pd.to_datetime(df["release_date"], errors='coerce').max()
+
 data_selecionada = st.sidebar.date_input(
     "Filtrar por data de lançamento:",
     [min_date, max_date] if min_date != max_date else min_date,
@@ -65,12 +62,10 @@ data_selecionada = st.sidebar.date_input(
 )
 
 if isinstance(data_selecionada, list) and len(data_selecionada) == 2:
-    df = df[(df["release_date"] >= pd.to_datetime(data_selecionada[0])) & (df["release_date"] <= pd.to_datetime(data_selecionada[1]))]
+    df = df[(pd.to_datetime(df["release_date"], errors='coerce') >= pd.to_datetime(data_selecionada[0])) &
+            (pd.to_datetime(df["release_date"], errors='coerce') <= pd.to_datetime(data_selecionada[1]))]
 
 ## 🔹 **Filtro por Preço**
-df["price"] = df["price"].astype(str).str.strip()
-df = df[df["price"] != ""]
-
 unique_prices = sorted(df["price"].dropna().unique(), key=lambda x: (x.isdigit(), x))
 
 preco_selecionado = st.sidebar.multiselect("Filtrar por preço:", unique_prices)
@@ -94,7 +89,7 @@ ordem_selecionada = st.sidebar.selectbox("📊 Ordenar por:", opcoes_ordenacao)
 if ordem_selecionada == "Nome":
     df = df.sort_values(by="title", ascending=True)
 elif ordem_selecionada == "Data de Lançamento":
-    df = df.sort_values(by="release_date", ascending=True)
+    df = df.sort_values(by=pd.to_datetime(df["release_date"], errors='coerce'), ascending=True)
 elif ordem_selecionada == "Preço":
     df = df.sort_values(by="price", ascending=True)
 
@@ -106,7 +101,8 @@ if st.sidebar.button("🗑️ Limpar Filtros"):
 hoje = datetime.today()
 prox_7_dias = hoje + timedelta(days=7)
 
-df["Destaque"] = df["release_date"].apply(lambda x: "🔥 " if x >= hoje and x <= prox_7_dias else "")
+df["Destaque"] = pd.to_datetime(df["release_date"], errors='coerce').apply(
+    lambda x: "🔥 " if pd.notna(x) and x >= hoje and x <= prox_7_dias else "")
 
 df["Nome"] = df["Destaque"] + df["title"]
 df = df.drop(columns=["Destaque"])
