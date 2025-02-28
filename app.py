@@ -5,24 +5,6 @@ from datetime import datetime, timedelta
 # 🚀 Configuração da Página
 st.set_page_config(page_title="🎮 Steam Lançamentos", layout="wide")
 
-# 🔹 Estilizar a Tabela - Centralizar Títulos e Ocultar Coluna Duplicada
-st.markdown(
-    """
-    <style>
-        thead th {
-            text-align: center !important;
-        }
-        tbody td {
-            text-align: left !important;
-        }
-        thead th:nth-child(5), tbody td:nth-child(5) {
-            display: none;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
 # URL do CSV no GitHub (RAW)
 CSV_URL = "https://raw.githubusercontent.com/luaprata/steam_lancamentos/main/steam_upcoming_games.csv"
 
@@ -122,34 +104,26 @@ df["Destaque"] = df["release_date"].apply(lambda x: "🔥 " if x >= hoje and x <
 df["Nome"] = df["Destaque"] + df["title"]
 df = df.drop(columns=["Destaque"])
 
-# Criar links clicáveis na coluna de URL
-df["game_url"] = df["game_url"].apply(lambda x: f'<a href="{x}" target="_blank">🔗 Acessar</a>')
+# Criar links clicáveis corretamente
+def format_link(url):
+    if pd.notna(url) and isinstance(url, str) and url.startswith("http"):
+        return f'<a href="{url}" target="_blank">🔗 Acessar</a>'
+    return ""
+
+df["Link"] = df["game_url"].apply(format_link)
 
 # Renomear colunas
 df = df.rename(columns={
     "release_date": "Data de Lançamento",
     "price": "Preço",
-    "genres": "Gêneros",
-    "game_url": "Link"
+    "genres": "Gêneros"
 })
 
 # Reordenar as colunas para deixar o Link por último
 df = df[["Nome", "Data de Lançamento", "Preço", "Gêneros", "Link"]]
 
-# Certificar-se de que os textos não possuem caracteres corrompidos
-df = df.astype(str)  # Converte todos os dados para string para evitar erros
-df = df.applymap(lambda x: x.encode('utf-8', 'ignore').decode('utf-8'))  # Remove caracteres inválidos
+# Exibir contagem de jogos
+st.write(f"🎮 Exibindo **{len(df)}** jogos filtrados")
 
-st.write(
-    df.to_html(escape=False, index=False),
-    unsafe_allow_html=True
-)
-
-# Exibir a tabela com os dados filtrados
-st.write("### 📋 Lista de Jogos")
-st.write("Clique no link para acessar a página do jogo na Steam.")
-
-st.write(
-    df.to_html(escape=False, index=False),
-    unsafe_allow_html=True
-)
+# Exibir a tabela usando `st.dataframe()` para evitar problemas com HTML
+st.dataframe(df, use_container_width=True)
