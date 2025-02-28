@@ -7,3 +7,4 @@ webdriver-manager
 jupyter
 tabulate
 discord
+matplotlib
