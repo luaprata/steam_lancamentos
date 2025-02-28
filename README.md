@@ -3,7 +3,7 @@
 Este projeto realiza **web scraping** na Steam para coletar informações sobre os jogos que serão lançados em breve. O pipeline inclui **extração de dados**, **atualização automática no GitHub**, **visualização no Streamlit** e **notificações via bot no Discord**.
 
 🔗 **[Acesse a Interface Web no Streamlit](https://luaprata-steamlancamentos.streamlit.app/)**  
-🤖 **Bot no Discord envia notificações diárias sobre lançamentos!**
+🤖 **[Bot no Discord envia notificações diárias sobre lançamentos!](https://prnt.sc/WXOjEkMY3ObQ)**
 
 ---
 
