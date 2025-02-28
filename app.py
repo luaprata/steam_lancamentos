@@ -136,8 +136,14 @@ df = df.rename(columns={
 # Reordenar as colunas para deixar o Link por último
 df = df[["Nome", "Data de Lançamento", "Preço", "Gêneros", "Link"]]
 
-# Exibir contagem de jogos
-st.write(f"🎮 Exibindo **{len(df)}** jogos filtrados")
+# Certificar-se de que os textos não possuem caracteres corrompidos
+df = df.astype(str)  # Converte todos os dados para string para evitar erros
+df = df.applymap(lambda x: x.encode('utf-8', 'ignore').decode('utf-8'))  # Remove caracteres inválidos
+
+st.write(
+    df.to_html(escape=False, index=False),
+    unsafe_allow_html=True
+)
 
 # Exibir a tabela com os dados filtrados
 st.write("### 📋 Lista de Jogos")
