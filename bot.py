@@ -16,6 +16,10 @@ CSV_URL = "https://raw.githubusercontent.com/luaprata/steam_lancamentos/main/ste
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 
+# Testar se as variáveis de ambiente estão carregando
+print(f"TOKEN: {os.getenv('TOKEN')}")
+print(f"CHANNEL_ID: {os.getenv('CHANNEL_ID')}")  # Isso deve imprimir o ID do canal correto
+
 # 🔹 Função para buscar os lançamentos próximos (🔥)
 def get_upcoming_games():
     try:
