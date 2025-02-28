@@ -60,38 +60,6 @@ Este projeto realiza **web scraping** na Steam para coletar informações sobre 
 
 ---
 
-## 🔧 Como Rodar o Projeto Localmente
-### 1️⃣ Clonar o Repositório
-```sh
-git clone https://github.com/seu-usuario/steam_scraper.git
-cd steam_scraper
-```
-
-### 2️⃣ Instalar Dependências
-```sh
-pip install -r requirements.txt
-```
-
-### 3️⃣ Rodar o Scraper
-```sh
-python steam_scraper.py
-```
-Isso irá gerar o arquivo **`steam_upcoming_games.csv`**.
-
-### 4️⃣ Rodar a Interface Web (Streamlit)
-```sh
-streamlit run app.py
-```
-Acesse a interface pelo navegador.
-
-### 5️⃣ Rodar o Bot do Discord
-```sh
-python bot.py
-```
-🔔 O bot irá **enviar as notificações automaticamente** e também responder ao comando `!lançamentos`.
-
----
-
 ## 💡 Melhorias Futuras
 👉 **API para consulta dos jogos coletados**  
 👉 **Dashboard interativo com gráficos**  
@@ -101,5 +69,4 @@ python bot.py
 ---
 
 ### 👨‍💻 Desenvolvido por [Luã Prata](https://github.com/luaprata) 🚀  
-Se gostou do projeto, **deixe uma ⭐ no repositório** e contribua com sugestões! 😃  
-```
+
