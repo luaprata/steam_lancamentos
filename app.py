@@ -18,19 +18,12 @@ if st.button("🔄 Atualizar Dados"):
     st.cache_data.clear()
     st.rerun()
 
-# ✅ Remover colunas duplicadas
-df = df.loc[:, ~df.columns.duplicated()]
+# ✅ Remover colunas duplicadas (garantindo que não existam conflitos)
+df = df.loc[:, ~df.columns.duplicated()].copy()
 
 # ✅ Garantir que todas as colunas estão no formato correto
-df = df.astype(str)
-
-# 🔄 Substituir valores ausentes por "Indefinido"
-df["release_date"] = df["release_date"].replace({None: "Indefinido", "nan": "Indefinido", "NaT": "Indefinido"})
-df["price"] = df["price"].replace({None: "Indefinido", "nan": "Indefinido", "NaT": "Indefinido"})
-
-# Garantir que as colunas estão no formato correto
-df["release_date"] = df["release_date"].astype(str)
-df["price"] = df["price"].astype(str)
+df["release_date"] = df["release_date"].replace({None: "Indefinido", "nan": "Indefinido", "NaT": "Indefinido"}).astype(str)
+df["price"] = df["price"].replace({None: "Indefinido", "nan": "Indefinido", "NaT": "Indefinido"}).astype(str)
 
 # 🔍 Sidebar com filtros
 st.sidebar.header("🔍 Filtros")
@@ -41,14 +34,14 @@ nome_busca = st.sidebar.text_input("🔎 Buscar jogo por nome:")
 if nome_busca:
     df = df[df["title"].str.contains(nome_busca, case=False, na=False)]
 
-## 🔹 **Filtro por Gênero**
+## 🔹 **Criar uma cópia de Gêneros para o filtro múltiplo**
 if "genres" in df.columns:
-    df["Gêneros"] = df["genres"].fillna("").astype(str)
-    generos_exploded = sorted(set(g for sublist in df["Gêneros"].str.split(', ') for g in sublist))
+    df["Gêneros_Filtro"] = df["genres"].fillna("").astype(str)
+    generos_exploded = sorted(set(g for sublist in df["Gêneros_Filtro"].str.split(', ') for g in sublist))
     genero_selecionado = st.sidebar.multiselect("Filtrar por gênero:", generos_exploded)
 
     if genero_selecionado:
-        df = df[df["Gêneros"].apply(lambda x: all(g in x for g in genero_selecionado))]
+        df = df[df["Gêneros_Filtro"].apply(lambda x: all(g in x for g in genero_selecionado))]
 
 ## 🔹 **Filtro por Data de Lançamento**
 min_date = pd.to_datetime(df["release_date"], errors='coerce').min()
@@ -110,12 +103,15 @@ df = df.drop(columns=["Destaque"])
 # 🔗 Exibir links como texto puro (removendo HTML para evitar erro)
 df["Link"] = df["game_url"]
 
-# 📌 Renomear colunas
+# 📌 Renomear colunas para exibição final
 df = df.rename(columns={
     "release_date": "Data de Lançamento",
     "price": "Preço",
     "genres": "Gêneros"
 })
+
+# 📌 Remover a coluna "Gêneros_Filtro" para evitar exibição duplicada
+df = df.drop(columns=["Gêneros_Filtro"], errors="ignore")
 
 # 📌 Reordenar colunas
 df = df[["Nome", "Data de Lançamento", "Preço", "Gêneros", "Link"]]
