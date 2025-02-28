@@ -88,6 +88,11 @@ if st.sidebar.checkbox("🆓 Mostrar apenas jogos gratuitos"):
 if st.sidebar.checkbox("🔗 Mostrar apenas jogos com link"):
     df = df[df["game_url"].notna()]
 
+# 🔥 **Filtro para Mostrar Apenas Jogos com Foguinho**
+if st.sidebar.checkbox("🔥 Mostrar apenas lançamentos próximos"):
+    df = df[df["Destaque"].str.contains("🔥", na=False)]
+
+
 # 🔥 Destaque para Jogos Próximos ao Lançamento
 hoje = datetime.today()
 prox_7_dias = hoje + timedelta(days=7)
