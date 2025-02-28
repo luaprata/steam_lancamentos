@@ -2,7 +2,7 @@
 
 Este projeto realiza web scraping na Steam para coletar informações sobre os jogos que serão lançados em breve. Ele extrai dados como título, data de lançamento, preço e gêneros dos jogos.
 
-**URL Streamlit:**  https://luaprata.streamlit.app/
+**URL Streamlit:**  https://luaprata-steamlancamentos.streamlit.app/
 
 ---
 
