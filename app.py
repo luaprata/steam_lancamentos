@@ -104,13 +104,8 @@ df["Destaque"] = df["release_date"].apply(lambda x: "🔥 " if x >= hoje and x <
 df["Nome"] = df["Destaque"] + df["title"]
 df = df.drop(columns=["Destaque"])
 
-# Criar links clicáveis corretamente
-def format_link(url):
-    if pd.notna(url) and isinstance(url, str) and url.startswith("http"):
-        return f'<a href="{url}" target="_blank">🔗 Acessar</a>'
-    return ""
-
-df["Link"] = df["game_url"].apply(format_link)
+# Criar links como texto puro (removendo HTML para evitar erro)
+df["Link"] = df["game_url"]
 
 # Renomear colunas
 df = df.rename(columns={
@@ -122,8 +117,11 @@ df = df.rename(columns={
 # Reordenar as colunas para deixar o Link por último
 df = df[["Nome", "Data de Lançamento", "Preço", "Gêneros", "Link"]]
 
+# 🚀 Garantir que todas as colunas estão no formato correto
+df = df.astype(str)
+
 # Exibir contagem de jogos
 st.write(f"🎮 Exibindo **{len(df)}** jogos filtrados")
 
-# Exibir a tabela usando `st.dataframe()` para evitar problemas com HTML
+# ✅ Exibir a tabela corrigida sem HTML
 st.dataframe(df, use_container_width=True)
