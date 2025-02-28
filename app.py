@@ -5,6 +5,22 @@ from datetime import datetime, timedelta
 # 🚀 Configuração da Página
 st.set_page_config(page_title="🎮 Steam Lançamentos", layout="wide")
 
+# 🎨 Ajustes Visuais com CSS
+st.markdown("""
+    <style>
+        /* Reduzir a altura da sidebar para expandir a tabela */
+        section[data-testid="stSidebar"] {
+            min-width: 280px;
+            width: 280px;
+        }
+        
+        /* Ajustar margens para expandir tabela */
+        .block-container {
+            padding-top: 0rem;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # 🔄 Carregar os dados e atualizar automaticamente a cada 10 minutos
 @st.cache_data(ttl=600)  
 def load_data():
@@ -25,9 +41,7 @@ df = df.loc[:, ~df.columns.duplicated()].copy()
 df["release_date"] = df["release_date"].replace({None: "Indefinido", "nan": "Indefinido", "NaT": "Indefinido"}).astype(str)
 df["price"] = df["price"].replace({None: "Indefinido", "nan": "Indefinido", "NaT": "Indefinido"}).astype(str)
 
-# 🔍 Sidebar com filtros
-st.sidebar.header("🔍 Filtros")
-
+# 🔍 Sidebar com filtros (Removemos o título "🔍 Filtros")
 ## 🔹 **Filtro por Nome**
 nome_busca = st.sidebar.text_input("🔎 Buscar jogo por nome:")
 
@@ -105,8 +119,10 @@ df = df.drop(columns=["Gêneros_Filtro"], errors="ignore")
 # 📌 Reordenar colunas
 df = df[["Nome", "Data de Lançamento", "Preço", "Gêneros", "Link"]]
 
-# ✅ Remover exibição da verificação dos tipos de dados
-# (ANTES ESTAVA EXIBINDO OS TIPOS, AGORA FOI REMOVIDO)
+# 🔹 **Botão "Limpar Filtros" (Agora no final da sidebar)**
+st.sidebar.markdown("---")  # Adiciona uma linha separadora
+if st.sidebar.button("🗑️ Limpar Filtros"):
+    st.experimental_rerun()
 
 # ✅ Exibir contagem de jogos
 st.write(f"🎮 Exibindo **{len(df)}** jogos filtrados")
