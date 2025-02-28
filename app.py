@@ -103,8 +103,8 @@ df["Ordem"] = df["Destaque"].apply(lambda x: 1 if "🔥" in x else 2)
 df = df.sort_values(by=["Ordem", "Data_Ordenacao"], ascending=[True, True])
 df = df.drop(columns=["Ordem", "Data_Ordenacao"])
 
-# 🔗 Exibir links como texto puro (removendo HTML para evitar erro)
-df["Link"] = df["game_url"]
+# 🔗 Criar hyperlinks clicáveis
+df["Link"] = df["game_url"].apply(lambda x: f"[🔗 Acessar]({x})" if pd.notna(x) else "Indisponível")
 
 # 📌 Renomear colunas para exibição final
 df = df.rename(columns={
@@ -124,8 +124,11 @@ st.sidebar.markdown("---")  # Adiciona uma linha separadora
 if st.sidebar.button("🗑️ Limpar Filtros"):
     st.experimental_rerun()
 
+# ✅ **Título Acima da Tabela**
+st.markdown("## 🎮 Steam Lançamentos")
+
 # ✅ Exibir contagem de jogos
 st.write(f"🎮 Exibindo **{len(df)}** jogos filtrados")
 
-# ✅ Exibir tabela corrigida
-st.dataframe(df, use_container_width=True)
+# ✅ Exibir tabela corrigida com Hyperlinks
+st.markdown(df.to_markdown(index=False), unsafe_allow_html=True)
