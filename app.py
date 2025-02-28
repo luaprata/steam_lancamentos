@@ -128,7 +128,7 @@ if st.sidebar.button("🗑️ Limpar Filtros"):
 st.markdown("## 🎮 Steam Lançamentos")
 
 # ✅ Exibir contagem de jogos
-st.write(f"🎮 Exibindo **{len(df)}** jogos filtrados")
+st.write(f" Exibindo **{len(df)}** jogos filtrados")
 
 # ✅ Exibir tabela corrigida com Hyperlinks
 st.markdown(df.to_markdown(index=False), unsafe_allow_html=True)
