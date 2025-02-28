@@ -1,0 +1,26 @@
+name: Deploy Railway (Somente bot.py e Procfile)
+
+on:
+  push:
+    paths:
+      - 'bot.py'         # 🚀 Faz deploy apenas se bot.py for alterado
+      - 'Procfile'       # 🚀 Faz deploy apenas se Procfile for alterado
+    branches:
+      - main             # Define que isso acontece apenas na branch principal
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v3
+
+      - name: Instalar Railway CLI
+        run: curl -fsSL https://railway.app/install.sh | sh
+
+      - name: Autenticar no Railway
+        run: railway login --token ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Fazer Deploy no Railway
+        run: railway up
