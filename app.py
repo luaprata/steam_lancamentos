@@ -18,6 +18,9 @@ if st.button("🔄 Atualizar Dados"):
     st.cache_data.clear()
     st.rerun()
 
+# ✅ Remover colunas duplicadas
+df = df.loc[:, ~df.columns.duplicated()]
+
 # ✅ Garantir que todas as colunas estão no formato correto
 df = df.astype(str)
 
