@@ -68,5 +68,5 @@ Este projeto realiza **web scraping** na Steam para coletar informações sobre 
 
 ---
 
-### 👨‍💻 Desenvolvido por [Luã Prata](https://github.com/luaprata) 🚀  
+### 👨‍💻 Desenvolvido por [Luã Prata](https://github.com/luaprata)  
 
