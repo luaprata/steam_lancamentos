@@ -20,7 +20,7 @@ jobs:
         run: curl -fsSL https://railway.app/install.sh | sh
 
       - name: Autenticar no Railway
-        run: railway login --token ${{ secrets.RAILWAY_TOKEN }}
+        run: railway auth --token=${{ secrets.RAILWAY_TOKEN }}
 
       - name: Fazer Deploy no Railway
         run: railway up
