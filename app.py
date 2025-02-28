@@ -107,22 +107,6 @@ df["Ordem"] = df["Destaque"].apply(lambda x: 1 if "🔥" in x else 2)
 df = df.sort_values(by=["Ordem", "Data_Ordenacao"], ascending=[True, True])
 df = df.drop(columns=["Ordem", "Data_Ordenacao"])
 
-# 🔗 **Criar Hyperlinks clicáveis**
-df["Link"] = df["game_url"].apply(lambda x: f'<a href="{x}" target="_blank">🔗 Acessar</a>' if pd.notna(x) else "Indisponível")
-
-# 📌 Renomear colunas para exibição final
-df = df.rename(columns={
-    "release_date": "Data de Lançamento",
-    "price": "Preço",
-    "genres": "Gêneros"
-})
-
-# 📌 Remover a coluna "Gêneros_Filtro" para evitar exibição duplicada
-df = df.drop(columns=["Gêneros_Filtro"], errors="ignore")
-
-# 📌 Reordenar colunas
-df = df[["Nome", "Data de Lançamento", "Preço", "Gêneros", "Link"]]
-
 # 🔹 **Botão "Limpar Filtros" (Agora no final da sidebar)**
 st.sidebar.markdown("---")  # Adiciona uma linha separadora
 if st.sidebar.button("🗑️ Limpar Filtros"):
@@ -134,5 +118,13 @@ st.markdown("## 🎮 Steam Lançamentos")
 # ✅ Exibir contagem de jogos
 st.write(f"🎮 Exibindo **{len(df)}** jogos filtrados")
 
-# ✅ Exibir tabela corrigida com Hyperlinks renderizados corretamente
-st.markdown(df.to_html(escape=False, index=False), unsafe_allow_html=True)
+# ✅ Exibir a tabela usando `st.dataframe()` para estabilidade
+df_display = df.drop(columns=["game_url"])
+st.dataframe(df_display, use_container_width=True)
+
+# ✅ Criar uma seção separada para os links clicáveis
+st.markdown("### 🔗 Links dos Jogos")
+for index, row in df.iterrows():
+    if pd.notna(row["game_url"]):
+        st.markdown(f"- [{row['Nome']}]({row['game_url']})")
+
