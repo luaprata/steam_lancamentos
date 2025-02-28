@@ -6,3 +6,4 @@ tqdm
 webdriver-manager
 jupyter
 tabulate
+discord
