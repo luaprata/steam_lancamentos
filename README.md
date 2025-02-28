@@ -40,6 +40,7 @@ Este projeto realiza web scraping na Steam para coletar informações sobre os j
 
 ## 💡 Melhorias Futuras
 - Implementar **API** para consulta dos jogos coletados.
+- Bot no **Discord** para notificar sobre os jogos.
 - Criar um **dashboard** para visualizar os dados.
 - Melhorar a **performance** na extração de dados.
 
