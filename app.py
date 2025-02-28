@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from datetime import datetime, timedelta
 
 # 🚀 Configuração da Página
 st.set_page_config(page_title="🎮 Steam Lançamentos", layout="wide")
@@ -51,6 +52,12 @@ else:
 # Sidebar com filtros
 st.sidebar.header("🔍 Filtros")
 
+## 🔹 **Filtro por Nome**
+nome_busca = st.sidebar.text_input("🔎 Buscar jogo por nome:")
+
+if nome_busca:
+    df = df[df["title"].str.contains(nome_busca, case=False, na=False)]
+
 ## 🔹 **Filtro por Gênero**
 if "genres" in df.columns:
     df["Gêneros"] = df["genres"].fillna("").astype(str)  # Evitar valores nulos
@@ -82,12 +89,44 @@ preco_selecionado = st.sidebar.multiselect("Filtrar por preço:", unique_prices)
 if preco_selecionado:
     df = df[df["price"].isin(preco_selecionado)]
 
+## 🔹 **Filtro para Jogos Gratuitos**
+if st.sidebar.checkbox("🆓 Mostrar apenas jogos gratuitos"):
+    df = df[df["price"].str.lower().str.contains("free", na=False)]
+
+## 🔹 **Filtro para Jogos com Link Disponível**
+if st.sidebar.checkbox("🔗 Mostrar apenas jogos com link"):
+    df = df[df["game_url"].notna()]
+
+## 🔹 **Ordenar por**
+opcoes_ordenacao = ["Nome", "Data de Lançamento", "Preço"]
+ordem_selecionada = st.sidebar.selectbox("📊 Ordenar por:", opcoes_ordenacao)
+
+# Aplicando ordenação
+if ordem_selecionada == "Nome":
+    df = df.sort_values(by="title", ascending=True)
+elif ordem_selecionada == "Data de Lançamento":
+    df = df.sort_values(by="release_date", ascending=True)
+elif ordem_selecionada == "Preço":
+    df = df.sort_values(by="price", ascending=True)
+
+## 🔹 **Botão "Limpar Filtros"**
+if st.sidebar.button("🗑️ Limpar Filtros"):
+    st.experimental_rerun()
+
+# 🔥 Destaque para Jogos Próximos ao Lançamento
+hoje = datetime.today()
+prox_7_dias = hoje + timedelta(days=7)
+
+df["Destaque"] = df["release_date"].apply(lambda x: "🔥 " if x >= hoje and x <= prox_7_dias else "")
+
+df["Nome"] = df["Destaque"] + df["title"]
+df = df.drop(columns=["Destaque"])
+
 # Criar links clicáveis na coluna de URL
 df["game_url"] = df["game_url"].apply(lambda x: f'<a href="{x}" target="_blank">🔗 Acessar</a>')
 
 # Renomear colunas
 df = df.rename(columns={
-    "title": "Nome",
     "release_date": "Data de Lançamento",
     "price": "Preço",
     "genres": "Gêneros",
@@ -96,6 +135,9 @@ df = df.rename(columns={
 
 # Reordenar as colunas para deixar o Link por último
 df = df[["Nome", "Data de Lançamento", "Preço", "Gêneros", "Link"]]
+
+# Exibir contagem de jogos
+st.write(f"🎮 Exibindo **{len(df)}** jogos filtrados")
 
 # Exibir a tabela com os dados filtrados
 st.write("### 📋 Lista de Jogos")
