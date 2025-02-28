@@ -5,12 +5,10 @@ from datetime import datetime, timedelta
 # 🚀 Configuração da Página
 st.set_page_config(page_title="🎮 Steam Lançamentos", layout="wide")
 
-# URL do CSV no GitHub (RAW)
-CSV_URL = "https://raw.githubusercontent.com/luaprata/steam_lancamentos/main/steam_upcoming_games.csv"
-
 # 🔄 Carregar os dados e atualizar automaticamente a cada 10 minutos
 @st.cache_data(ttl=600)  
 def load_data():
+    CSV_URL = "https://raw.githubusercontent.com/luaprata/steam_lancamentos/main/steam_upcoming_games.csv"
     return pd.read_csv(CSV_URL)
 
 df = load_data()
@@ -20,8 +18,14 @@ if st.button("🔄 Atualizar Dados"):
     st.cache_data.clear()
     st.rerun()
 
-# Garantir que 'release_date' não tenha valores vazios
-df = df.dropna(subset=["release_date"])  
+# ✅ Garantir que todas as colunas estão no formato correto
+df = df.astype(str)
+
+# ✅ Remover valores inválidos
+df = df.dropna(how="any")  
+df = df.replace({None: "", "nan": "", "NaT": ""})
+
+# ✅ Converter 'release_date' para datetime
 df["release_date"] = pd.to_datetime(df["release_date"], errors='coerce')
 
 # Se o dataframe estiver vazio após remover NaT, definir valores padrão
@@ -31,7 +35,7 @@ else:
     min_date = df["release_date"].min()
     max_date = df["release_date"].max()
 
-# Sidebar com filtros
+# 🔍 Sidebar com filtros
 st.sidebar.header("🔍 Filtros")
 
 ## 🔹 **Filtro por Nome**
@@ -42,7 +46,7 @@ if nome_busca:
 
 ## 🔹 **Filtro por Gênero**
 if "genres" in df.columns:
-    df["Gêneros"] = df["genres"].fillna("").astype(str)  # Evitar valores nulos
+    df["Gêneros"] = df["genres"].fillna("").astype(str)
     generos_exploded = sorted(set(g for sublist in df["Gêneros"].str.split(', ') for g in sublist))
     genero_selecionado = st.sidebar.multiselect("Filtrar por gênero:", generos_exploded)
 
@@ -104,24 +108,25 @@ df["Destaque"] = df["release_date"].apply(lambda x: "🔥 " if x >= hoje and x <
 df["Nome"] = df["Destaque"] + df["title"]
 df = df.drop(columns=["Destaque"])
 
-# Criar links como texto puro (removendo HTML para evitar erro)
+# 🔗 Exibir links como texto puro (removendo HTML para evitar erro)
 df["Link"] = df["game_url"]
 
-# Renomear colunas
+# 📌 Renomear colunas
 df = df.rename(columns={
     "release_date": "Data de Lançamento",
     "price": "Preço",
     "genres": "Gêneros"
 })
 
-# Reordenar as colunas para deixar o Link por último
+# 📌 Reordenar colunas
 df = df[["Nome", "Data de Lançamento", "Preço", "Gêneros", "Link"]]
 
-# 🚀 Garantir que todas as colunas estão no formato correto
-df = df.astype(str)
+# ✅ Verificar tipos antes de exibir
+st.write("🔍 Verificando tipos de dados antes de exibir:")
+st.write(df.dtypes)
 
-# Exibir contagem de jogos
+# ✅ Exibir contagem de jogos
 st.write(f"🎮 Exibindo **{len(df)}** jogos filtrados")
 
-# ✅ Exibir a tabela corrigida sem HTML
+# ✅ Exibir tabela corrigida
 st.dataframe(df, use_container_width=True)
