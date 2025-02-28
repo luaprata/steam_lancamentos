@@ -17,7 +17,7 @@ Este projeto realiza **web scraping** na Steam para coletar informações sobre 
    - Filtra jogos com **restrição de idade**.
 
 2. **Atualização Automática via GitHub Actions**:  
-   - O script roda **periodicamente** (exemplo: a cada 12h).  
+   - O script roda **diariamente**.  
    - O **CSV atualizado** é enviado para o repositório do GitHub.  
 
 3. **Interface Web com Streamlit**:  
